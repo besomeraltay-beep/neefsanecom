@@ -128,11 +128,25 @@ export default function OrdersPage({
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] py-8">
-      <div className="w-full max-w-[1240px] mx-auto px-4 sm:px-6">
+    <div className="min-h-screen bg-[#F8F9FA] py-3 sm:py-8">
+      <div className="w-full max-w-[1240px] mx-auto px-3 sm:px-6">
         
-        {/* Breadcrumb Navigation */}
-        <div className="flex items-center justify-between gap-4 mb-6 pb-3 border-b border-gray-200">
+        {/* Mobile Header Bar (md:hidden) */}
+        <div className="md:hidden flex items-center justify-between py-2 mb-3">
+          <button 
+            onClick={onBackToStore}
+            className="flex items-center gap-2 text-sm font-extrabold text-gray-900 active:opacity-70 transition-opacity cursor-pointer"
+          >
+            <ArrowLeft className="w-5 h-5 text-gray-800" />
+            <span>Siparişlerim</span>
+          </button>
+          <span className="text-[11px] font-bold text-gray-600 bg-white border border-gray-200 px-2.5 py-1 rounded-full shadow-2xs">
+            {counts.total} Sipariş
+          </span>
+        </div>
+
+        {/* Desktop Breadcrumb Navigation */}
+        <div className="hidden md:flex items-center justify-between gap-4 mb-6 pb-3 border-b border-gray-200">
           <nav className="flex items-center gap-2 text-xs text-gray-500">
             <button 
               onClick={onBackToStore} 
@@ -155,8 +169,8 @@ export default function OrdersPage({
           </button>
         </div>
 
-        {/* Page Header */}
-        <div className="bg-white rounded-3xl border border-gray-200/90 p-5 sm:p-7 mb-6 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        {/* Desktop Page Header */}
+        <div className="hidden md:flex bg-white rounded-3xl border border-gray-200/90 p-5 sm:p-7 mb-6 shadow-xs flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex items-center gap-4">
             <div className="w-13 h-13 rounded-2xl bg-[#111827] text-white flex items-center justify-center shadow-md shrink-0">
               <Package className="w-6 h-6 text-[#C2410C]" />
@@ -179,8 +193,8 @@ export default function OrdersPage({
           </div>
         </div>
 
-        {/* Compact Discount Coupon (İlk Siparişe Özel %10 İndirim - Sade ve Şık) */}
-        <div className="bg-gradient-to-r from-amber-500/10 via-orange-500/5 to-amber-500/10 border border-amber-200/90 rounded-2xl p-3.5 sm:px-5 sm:py-3 mb-6 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        {/* Desktop Compact Discount Coupon */}
+        <div className="hidden md:flex bg-gradient-to-r from-amber-500/10 via-orange-500/5 to-amber-500/10 border border-amber-200/90 rounded-2xl p-3.5 sm:px-5 sm:py-3 mb-6 shadow-2xs flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#111827] to-[#C2410C] text-white flex items-center justify-center shrink-0 shadow-2xs">
               <Sparkles className="w-4 h-4 text-amber-400 fill-amber-400" />
@@ -223,8 +237,27 @@ export default function OrdersPage({
           </div>
         </div>
 
-        {/* Filters & Search Toolbar */}
-        <div className="bg-white rounded-2xl border border-gray-200/90 p-4 mb-6 shadow-xs flex flex-col md:flex-row items-center justify-between gap-4">
+        {/* Mobile Compact Coupon Pill (md:hidden) */}
+        <div className="md:hidden bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-amber-500/15 border border-amber-200/90 rounded-xl p-2.5 mb-3 flex items-center justify-between gap-2 shadow-2xs">
+          <div className="flex items-center gap-2 min-w-0">
+            <Sparkles className="w-4 h-4 text-[#C2410C] shrink-0" />
+            <div className="min-w-0">
+              <span className="text-xs font-bold text-gray-900 block truncate">İlk Siparişe %10 İndirim</span>
+              <span className="text-[10px] text-gray-500 font-mono">HOSGELDIN10</span>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => handleCopy('HOSGELDIN10', 'coupon-mobile')}
+            className="px-2.5 py-1 bg-[#111827] text-white text-[11px] font-bold rounded-lg shrink-0 flex items-center gap-1 active:scale-95 transition-transform"
+          >
+            {copiedCode === 'coupon-mobile' ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+            <span>{copiedCode === 'coupon-mobile' ? 'Kopyalandı' : 'Kopyala'}</span>
+          </button>
+        </div>
+
+        {/* Desktop Filters & Search Toolbar */}
+        <div className="hidden md:flex bg-white rounded-2xl border border-gray-200/90 p-4 mb-6 shadow-xs flex-col md:flex-row items-center justify-between gap-4">
           
           {/* Status Tabs */}
           <div className="flex flex-wrap items-center gap-1.5 p-1 bg-gray-100 rounded-xl w-full md:w-auto">
@@ -260,6 +293,54 @@ export default function OrdersPage({
             />
           </div>
 
+        </div>
+
+        {/* Mobile Filter Tabs & Search (md:hidden) */}
+        <div className="md:hidden space-y-2.5 mb-4">
+          <div className="relative w-full">
+            <Search className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Sipariş no, kargo veya ürün ara..."
+              className="w-full bg-white text-gray-900 placeholder-gray-400 text-xs rounded-xl pl-9 pr-8 py-2 border border-gray-200 focus:border-[#111827] focus:outline-none shadow-2xs"
+            />
+            {searchQuery && (
+              <button 
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2.5 top-2 text-xs text-gray-400 font-bold p-0.5"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 -mx-1 px-1">
+            {[
+              { id: 'all', label: 'Tümü', count: counts.total },
+              { id: 'active', label: 'Devam Edenler', count: counts.active },
+              { id: 'delivered', label: 'Teslim Edilenler', count: counts.delivered },
+              { id: 'cancelled', label: 'İptal', count: counts.cancelled }
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-3 py-1.5 rounded-full text-xs font-bold shrink-0 transition-all cursor-pointer flex items-center gap-1.5 ${
+                  activeTab === tab.id
+                    ? 'bg-[#111827] text-white shadow-xs'
+                    : 'bg-white text-gray-600 border border-gray-200'
+                }`}
+              >
+                <span>{tab.label}</span>
+                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                  activeTab === tab.id ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500'
+                }`}>
+                  {tab.count}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Orders Listing */}
@@ -318,16 +399,14 @@ export default function OrdersPage({
               const itemsList = Array.isArray(order.items) ? order.items : [];
 
               return (
-                <div 
-                  key={order.orderNumber || index}
-                  className={`bg-white rounded-3xl border transition-all duration-200 overflow-hidden ${
+                <div key={order.orderNumber || index}>
+                  {/* DESKTOP ORDER CARD (hidden md:block) */}
+                  <div className={`hidden md:block bg-white rounded-3xl border transition-all duration-200 overflow-hidden ${
                     isExpanded 
                       ? 'border-[#111827]/40 shadow-md ring-1 ring-[#111827]/10' 
                       : 'border-gray-200/90 hover:border-gray-300 shadow-xs hover:shadow-sm'
-                  }`}
-                >
-                  
-                  {/* Order Card Clickable Header Bar */}
+                  }`}>
+                    {/* Order Card Clickable Header Bar */}
                   <div 
                     onClick={() => handleToggleOrder(order.orderNumber)}
                     className="p-4 sm:p-5 bg-gray-50/80 hover:bg-gray-100/60 border-b border-gray-200/80 flex flex-wrap items-center justify-between gap-4 cursor-pointer select-none transition-colors"
@@ -660,6 +739,231 @@ export default function OrdersPage({
                     </div>
                   )}
 
+                  </div>
+
+                  {/* MOBILE ORDER CARD (md:hidden) */}
+                  <div className="md:hidden bg-white rounded-2xl border border-gray-200/90 shadow-2xs overflow-hidden mb-3">
+                    {/* Header: Status, Date, Order No & Total */}
+                    <div className="p-3.5 bg-gray-50/70 border-b border-gray-100">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className={`text-[11px] font-black px-2.5 py-0.5 rounded-full border ${conf.color} flex items-center gap-1.5`}>
+                          <span className="w-1.5 h-1.5 rounded-full bg-current"></span>
+                          <span>{conf.badge}</span>
+                        </span>
+                        <span className="text-[11px] text-gray-500 font-medium flex items-center gap-1">
+                          <Calendar className="w-3 h-3 text-gray-400" />
+                          <span>{order.date}</span>
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1 text-xs">
+                          <span className="text-gray-400 text-[10px] font-bold uppercase">No:</span>
+                          <span className="font-mono font-bold text-gray-900">#{order.orderNumber}</span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleCopy(order.orderNumber, `order-m-${index}`);
+                            }}
+                            className="p-1 text-gray-400 hover:text-black cursor-pointer"
+                          >
+                            {copiedCode === `order-m-${index}` ? (
+                              <Check className="w-3 h-3 text-emerald-600" />
+                            ) : (
+                              <Copy className="w-3 h-3" />
+                            )}
+                          </button>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-[11px] text-gray-400 font-normal mr-1">Toplam:</span>
+                          <span className="text-sm font-black text-gray-900">{order.total} TL</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Product Items List (Clean mobile rows) */}
+                    <div className="p-3 bg-white divide-y divide-gray-50">
+                      {itemsList.map((item, itemIdx) => {
+                        const unitPrice = item.discountPrice || item.price;
+                        return (
+                          <div key={itemIdx} className="py-2.5 first:pt-0 last:pb-0 flex items-center gap-3">
+                            <img
+                              src={item.image}
+                              alt={item.name}
+                              className="w-14 h-14 rounded-xl object-cover bg-gray-50 border border-gray-200/80 shrink-0"
+                            />
+                            <div className="min-w-0 flex-1">
+                              <h5 
+                                onClick={() => onOpenProductDetail && onOpenProductDetail(item)}
+                                className="font-bold text-gray-900 text-xs hover:text-[#C2410C] transition-colors cursor-pointer line-clamp-1"
+                              >
+                                {item.name}
+                              </h5>
+                              <div className="flex flex-wrap items-center gap-2 text-[11px] text-gray-500 mt-0.5">
+                                <span>Adet: <strong>{item.quantity}</strong></span>
+                                {item.selectedModel && <span>• {item.selectedModel}</span>}
+                                {item.selectedColor && <span>• {item.selectedColor}</span>}
+                              </div>
+                              <div className="flex items-center justify-between mt-1">
+                                <span className="text-xs font-black text-gray-900">
+                                  {unitPrice * (item.quantity || 1)} TL
+                                </span>
+                                {onAddToCart && (
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      onAddToCart(item);
+                                      if (typeof onShowToast === 'function') {
+                                        onShowToast(`"${item.name}" tekrar sepete eklendi.`);
+                                      }
+                                    }}
+                                    className="px-2 py-0.5 text-[10px] font-bold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors cursor-pointer"
+                                  >
+                                    Tekrar Al
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Action buttons row */}
+                    <div className="p-2.5 bg-gray-50/80 border-t border-gray-100 flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleToggleOrder(order.orderNumber)}
+                        className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
+                          isExpanded
+                            ? 'bg-[#111827] text-white shadow-xs'
+                            : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-100'
+                        }`}
+                      >
+                        <Truck className="w-3.5 h-3.5 text-[#C2410C]" />
+                        <span>{isExpanded ? 'Detayları Kapat' : 'Kargo & Detay'}</span>
+                        <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                      </button>
+
+                      <a
+                        href={trackingUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="py-2 px-3.5 bg-white hover:bg-gray-100 border border-gray-200 text-gray-800 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-colors shrink-0 shadow-2xs"
+                      >
+                        <span>Canlı Takip</span>
+                        <ExternalLink className="w-3 h-3 text-[#C2410C]" />
+                      </a>
+                    </div>
+
+                    {/* Mobile Expanded Details */}
+                    {isExpanded && (
+                      <div className="p-3.5 bg-gray-50 border-t border-gray-100 space-y-3 animate-fadeIn text-xs">
+                        {/* 4-Step Vertical Tracker for mobile */}
+                        <div className="bg-white p-3 rounded-xl border border-gray-200/80">
+                          <div className="text-[11px] font-bold text-gray-800 mb-2.5 flex items-center justify-between">
+                            <span className="flex items-center gap-1.5">
+                              <Truck className="w-3.5 h-3.5 text-[#C2410C]" />
+                              <span>Kargo Aşamaları</span>
+                            </span>
+                            <span className="text-[10px] text-gray-400 font-normal">{courierName}</span>
+                          </div>
+
+                          <div className="space-y-2.5">
+                            {[
+                              { num: 1, title: 'Sipariş Alındı', sub: 'Hazırlanıyor' },
+                              { num: 2, title: 'Kargoya Verildi', sub: courierName },
+                              { num: 3, title: 'Dağıtımda', sub: 'Kurye Yolda' },
+                              { num: 4, title: 'Teslim Edildi', sub: 'Tamamlandı' },
+                            ].map((st) => {
+                              const isDone = currentStep >= st.num;
+                              const isCurrent = currentStep === st.num;
+                              return (
+                                <div key={st.num} className="flex items-center gap-2.5">
+                                  <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 ${
+                                    isDone 
+                                      ? (st.num === 4 ? 'bg-emerald-600 text-white' : 'bg-[#111827] text-white') 
+                                      : 'bg-gray-100 text-gray-400'
+                                  }`}>
+                                    {isDone ? <Check className="w-3 h-3" /> : st.num}
+                                  </div>
+                                  <div className="flex-1 flex items-center justify-between">
+                                    <span className={`text-xs ${isCurrent ? 'font-black text-gray-900' : isDone ? 'font-semibold text-gray-700' : 'text-gray-400'}`}>
+                                      {st.title}
+                                    </span>
+                                    <span className="text-[10px] text-gray-400">{st.sub}</span>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        {/* Courier & Tracking Code Box */}
+                        <div className="bg-white p-3 rounded-xl border border-gray-200/80 space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[11px] font-semibold text-gray-500">Kargo Firması:</span>
+                            <span className="text-xs font-bold text-gray-900">{courierName}</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-[11px] font-semibold text-gray-500">Takip No:</span>
+                            <div className="flex items-center gap-1 font-mono text-xs font-bold text-gray-900">
+                              <span>{trackingCode}</span>
+                              <button
+                                type="button"
+                                onClick={() => handleCopy(trackingCode, `track-m-${index}`)}
+                                className="p-1 text-gray-400 hover:text-black cursor-pointer"
+                              >
+                                {copiedCode === `track-m-${index}` ? (
+                                  <Check className="w-3 h-3 text-emerald-600" />
+                                ) : (
+                                  <Copy className="w-3 h-3" />
+                                )}
+                              </button>
+                            </div>
+                          </div>
+                          {order.deliveryEstimate && (
+                            <div className="flex items-center justify-between pt-1 border-t border-gray-100 text-[11px]">
+                              <span className="text-gray-500">Tahmini Teslimat:</span>
+                              <span className="font-bold text-gray-800">{order.deliveryEstimate}</span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Address & Payment Info */}
+                        <div className="bg-white p-3 rounded-xl border border-gray-200/80 space-y-2">
+                          <div>
+                            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1 mb-0.5">
+                              <MapPin className="w-3 h-3 text-gray-500" />
+                              <span>Teslimat Adresi</span>
+                            </div>
+                            <p className="text-xs text-gray-700 leading-snug">
+                              {order.customer?.address || 'Kayıtlı teslimat adresi'}
+                            </p>
+                            <p className="text-[11px] text-gray-500 mt-0.5">
+                              {order.customer?.district && `${order.customer.district} / `}{order.customer?.city} • {order.customer?.phone}
+                            </p>
+                          </div>
+
+                          <div className="pt-2 border-t border-gray-100">
+                            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1 mb-0.5">
+                              <CreditCard className="w-3 h-3 text-gray-500" />
+                              <span>Ödeme Bilgisi</span>
+                            </div>
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-gray-600">{order.paymentMethod || 'Kredi / Banka Kartı'}</span>
+                              <span className="text-emerald-700 font-bold flex items-center gap-1 text-[11px]">
+                                <CheckCircle2 className="w-3 h-3" />
+                                <span>3D Secure Onaylı</span>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    )}
+                  </div>
                 </div>
               );
             })}
