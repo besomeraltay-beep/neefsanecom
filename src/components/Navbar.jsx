@@ -7,13 +7,126 @@ import {
   X, 
   LogOut, 
   PackageCheck, 
-  ArrowRight,
   Truck,
   Sparkles,
   Copy,
   Check,
-  ShoppingCart
+  ShoppingCart,
+  ChevronRight,
+  MessageCircle,
+  Info,
+  LayoutGrid
 } from 'lucide-react';
+
+const DRAWER_DEPARTMENTS = [
+  { id: 'tum', name: 'KOLEKSİYON' },
+  { id: '3d-araba-figuru', name: '3D FİGÜR' },
+  { id: 'telefon-kilifi', name: 'KILIFLAR' },
+  { id: 'kolye', name: 'KOLYELER' },
+  { id: 'bileklik', name: 'BİLEKLİKLER' },
+  { id: 'diger-aksesuarlar', name: 'AKSESUAR' }
+];
+
+const DRAWER_MENU_DATA = {
+  'tum': {
+    sidebar: [
+      { id: 'populer', name: 'Popüler Ürünler' },
+      { id: '3d', name: '3D Modeller' },
+      { id: 'kilif', name: 'Telefon Kılıfı' },
+      { id: 'taki', name: 'Kolye & Bileklik' },
+      { id: 'aksesuar', name: 'Aksesuarlar' },
+      { id: 'firsat', name: 'Fırsat Ürünleri' },
+      { id: 'luks', name: 'Lüks & Özel Seri' }
+    ],
+    items: [
+      { name: 'Porsche 911 GT3', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=240&auto=format&fit=crop&q=80' },
+      { name: 'Nissan GT-R R34', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=240&auto=format&fit=crop&q=80' },
+      { name: 'MagSafe Kılıf', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1601593346740-925612772716?w=240&auto=format&fit=crop&q=80' },
+      { name: 'Kristal Şeffaf', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=240&auto=format&fit=crop&q=80' },
+      { name: 'Kuzey Yıldızı', categoryId: 'kolye', image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=240&auto=format&fit=crop&q=80' },
+      { name: 'Mat Oniks Lav', categoryId: 'bileklik', image: 'https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=240&auto=format&fit=crop&q=80' },
+      { name: 'AirPods Zırh', categoryId: 'diger-aksesuarlar', image: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=240&auto=format&fit=crop&q=80' },
+      { name: 'Gotik Hançer', categoryId: 'kolye', image: 'https://images.unsplash.com/photo-1506630448388-4e683c67ddb0?w=240&auto=format&fit=crop&q=80' }
+    ]
+  },
+  '3d-araba-figuru': {
+    sidebar: [
+      { id: 'supercar', name: 'Supercar Serisi' },
+      { id: 'jdm', name: 'JDM Efsaneleri' },
+      { id: 'classic', name: 'Klasik Spor' },
+      { id: 'cyber', name: 'Cyberpunk' },
+      { id: 'stand', name: 'Masaüstü Stand' }
+    ],
+    items: [
+      { name: 'Porsche 911 GT3', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=240&auto=format&fit=crop&q=80' },
+      { name: 'Nissan Skyline', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=240&auto=format&fit=crop&q=80' },
+      { name: 'İtalyan Rosso', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=240&auto=format&fit=crop&q=80' },
+      { name: 'Cyberpunk Konsept', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=240&auto=format&fit=crop&q=80' },
+      { name: 'Bavarian M Power', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=240&auto=format&fit=crop&q=80' }
+    ]
+  },
+  'telefon-kilifi': {
+    sidebar: [
+      { id: 'magsafe', name: 'MagSafe Serisi' },
+      { id: 'seffaf', name: 'Kristal Şeffaf' },
+      { id: 'karbon', name: 'Karbon Fiber' },
+      { id: 'alcantara', name: 'Alcantara Lüks' },
+      { id: 'koruma', name: 'Darbe Emici Airbag' }
+    ],
+    items: [
+      { name: 'MagSafe Mat', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1601593346740-925612772716?w=240&auto=format&fit=crop&q=80' },
+      { name: 'Kristal Şeffaf', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=240&auto=format&fit=crop&q=80' },
+      { name: 'Karbon Zırh', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1580910051074-3eb694886505?w=240&auto=format&fit=crop&q=80' },
+      { name: 'Lüks Alcantara', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1586105251261-72a756497a11?w=240&auto=format&fit=crop&q=80' },
+      { name: 'Hava Kanallı', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1585060544812-6b45742d762f?w=240&auto=format&fit=crop&q=80' }
+    ]
+  },
+  'kolye': {
+    sidebar: [
+      { id: 'madalyon', name: 'Madalyon Kolye' },
+      { id: 'zincir', name: 'Çelik Zincirler' },
+      { id: 'prizma', name: 'Geometrik Seri' },
+      { id: 'gotik', name: 'Gotik & Sembol' },
+      { id: 'minimal', name: 'Minimalist' }
+    ],
+    items: [
+      { name: 'Kuzey Yıldızı', categoryId: 'kolye', image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=240&auto=format&fit=crop&q=80' },
+      { name: 'Geometrik Prizma', categoryId: 'kolye', image: 'https://images.unsplash.com/photo-1611591475870-7ec8293998b3?w=240&auto=format&fit=crop&q=80' },
+      { name: 'Gümüş Figaro', categoryId: 'kolye', image: 'https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?w=240&auto=format&fit=crop&q=80' },
+      { name: 'Gotik Hançer', categoryId: 'kolye', image: 'https://images.unsplash.com/photo-1506630448388-4e683c67ddb0?w=240&auto=format&fit=crop&q=80' },
+      { name: 'Minimalist Çubuk', categoryId: 'kolye', image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=240&auto=format&fit=crop&q=80' }
+    ]
+  },
+  'bileklik': {
+    sidebar: [
+      { id: 'dogaltas', name: 'Doğal Taş' },
+      { id: 'deri', name: 'Hakiki Deri' },
+      { id: 'celik', name: 'Çelik Kelepçe' },
+      { id: 'denge', name: 'Lav & Oniks' },
+      { id: 'titanyum', name: 'Titanyum Manyetik' }
+    ],
+    items: [
+      { name: 'Mat Oniks Enerji', categoryId: 'bileklik', image: 'https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=240&auto=format&fit=crop&q=80' },
+      { name: 'Örgü Deri Kelepçe', categoryId: 'bileklik', image: 'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=240&auto=format&fit=crop&q=80' },
+      { name: 'Kaplan Gözü Lav', categoryId: 'bileklik', image: 'https://images.unsplash.com/photo-1600003014755-ba31aa59c4b6?w=240&auto=format&fit=crop&q=80' },
+      { name: 'Çift Sıra Çelik', categoryId: 'bileklik', image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=240&auto=format&fit=crop&q=80' },
+      { name: 'Manyetik Titanyum', categoryId: 'bileklik', image: 'https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=240&auto=format&fit=crop&q=80' }
+    ]
+  },
+  'diger-aksesuarlar': {
+    sidebar: [
+      { id: 'airpods', name: 'AirPods Kılıfı' },
+      { id: 'arac', name: 'Araç İçi Tutucu' },
+      { id: 'kutu', name: 'Özel Hediye Kutusu' },
+      { id: 'set', name: 'Kombin Setler' }
+    ],
+    items: [
+      { name: 'AirPods Zırh', categoryId: 'diger-aksesuarlar', image: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=240&auto=format&fit=crop&q=80' },
+      { name: 'Masaüstü Stand', categoryId: 'diger-aksesuarlar', image: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=240&auto=format&fit=crop&q=80' },
+      { name: 'Lüks Hediye Kutusu', categoryId: 'diger-aksesuarlar', image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=240&auto=format&fit=crop&q=80' }
+    ]
+  }
+};
 
 export default function Navbar({
   searchTerm,
@@ -33,6 +146,10 @@ export default function Navbar({
   onOpenProductDetail
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeDrawerDept, setActiveDrawerDept] = useState('tum');
+  const [activeSidebarIdx, setActiveSidebarIdx] = useState(0);
+
+  const currentDeptData = DRAWER_MENU_DATA[activeDrawerDept] || DRAWER_MENU_DATA['tum'];
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
   const [couponCopied, setCouponCopied] = useState(false);
@@ -456,87 +573,190 @@ export default function Navbar({
           })}
         </nav>
 
-        {/* Mobile Dropdown Drawer */}
+        {/* MOBİL TRENDYOL KATEGORİ MENÜSÜ (Birebir Screenshot Tasarımı - SADECE MOBİL: md:hidden) */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-200 space-y-4 animate-fadeIn">
-            <div>
-              <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2 px-1">
-                Kategoriler
-              </div>
-              <div className="space-y-1">
-                {categories.map((cat) => {
-                  const isActive = activeCategory === cat.id;
+          <div className="fixed inset-0 z-50 bg-white flex flex-col md:hidden animate-fadeIn">
+            
+            {/* 1. ÜST HEADER: Logo ve Kapat (X) Butonu */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-white shrink-0">
+              <span className="text-xl font-black text-gray-900 tracking-tight lowercase">
+                neefsane<span className="text-[#F27A1A]">.</span>
+              </span>
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-1 text-gray-700 hover:text-black cursor-pointer rounded-full active:bg-gray-100"
+                aria-label="Kapat"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* 2. ÜST YATAY KATEGORİ SEKMELERİ (Trendyol: KADIN, ERKEK, ANNE & ÇOCUK yerine) */}
+            <div className="flex items-center gap-5 px-4 border-b border-gray-200 overflow-x-auto no-scrollbar bg-white shrink-0">
+              {DRAWER_DEPARTMENTS.map((dept) => {
+                const isSelected = activeDrawerDept === dept.id;
+                return (
+                  <button
+                    key={dept.id}
+                    type="button"
+                    onClick={() => {
+                      setActiveDrawerDept(dept.id);
+                      setActiveSidebarIdx(0);
+                    }}
+                    className={`py-3 text-[13px] font-bold whitespace-nowrap transition-all cursor-pointer relative ${
+                      isSelected ? 'text-[#F27A1A]' : 'text-gray-600 hover:text-black'
+                    }`}
+                  >
+                    <span>{dept.name}</span>
+                    {isSelected && (
+                      <span className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#F27A1A] rounded-full"></span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* 3. İKİ KOLONLU KATEGORİ GEZGİNİ (TRENDYOL BİREBİR) */}
+            <div className="flex-1 flex overflow-hidden">
+              
+              {/* Sol Kolon: Alt Menü Listesi (Gri Arka Plan) */}
+              <div className="w-28 sm:w-32 bg-[#F8F9FA] border-r border-gray-200 py-1 overflow-y-auto no-scrollbar shrink-0">
+                {currentDeptData.sidebar.map((side, idx) => {
+                  const isActive = activeSidebarIdx === idx;
                   return (
                     <button
-                      key={cat.id}
-                      onClick={() => {
-                        onSelectCategory(cat.id);
-                        setMobileMenuOpen(false);
-                      }}
-                      className={`w-full text-left px-3 py-2.5 rounded-lg text-sm font-semibold flex items-center justify-between ${
+                      key={side.id}
+                      type="button"
+                      onClick={() => setActiveSidebarIdx(idx)}
+                      className={`w-full text-left px-3 py-3 text-[12px] leading-snug transition-colors cursor-pointer ${
                         isActive
-                          ? 'bg-[#111827] text-white'
-                          : 'text-gray-700 hover:bg-gray-100'
+                          ? 'bg-white text-[#F27A1A] font-extrabold border-l-2 border-[#F27A1A]'
+                          : 'text-gray-700 font-medium hover:bg-gray-100'
                       }`}
                     >
-                      <span>{cat.name}</span>
-                      <ArrowRight className="w-4 h-4 text-gray-400" />
+                      {side.name}
                     </button>
                   );
                 })}
               </div>
+
+              {/* Sağ Kolon: 3'lü Görsel İkon Kartları Izgarası (Beyaz Arka Plan) */}
+              <div className="flex-1 bg-white p-3 overflow-y-auto">
+                <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
+                  {currentDeptData.items.map((item, idx) => (
+                    <div
+                      key={idx}
+                      onClick={() => {
+                        onSelectCategory(item.categoryId);
+                        setMobileMenuOpen(false);
+                      }}
+                      className="group flex flex-col items-center text-center cursor-pointer"
+                    >
+                      <div className="w-full aspect-square rounded-2xl bg-[#F9FAFB] border border-gray-100 p-1.5 flex items-center justify-center overflow-hidden group-active:scale-95 transition-transform shadow-2xs">
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="w-full h-full object-cover rounded-xl"
+                          loading="lazy"
+                        />
+                      </div>
+                      <span className="text-[11px] font-medium text-gray-800 line-clamp-2 mt-1 leading-tight group-hover:text-[#F27A1A]">
+                        {item.name}
+                      </span>
+                    </div>
+                  ))}
+
+                  {/* Son Kart: Tümünü Gör (Trendyol İmzası) */}
+                  <div
+                    onClick={() => {
+                      onSelectCategory(activeDrawerDept === 'tum' ? 'all' : activeDrawerDept);
+                      setMobileMenuOpen(false);
+                    }}
+                    className="group flex flex-col items-center text-center cursor-pointer"
+                  >
+                    <div className="w-full aspect-square rounded-2xl bg-orange-50 border border-orange-200/80 p-2 flex flex-col items-center justify-center gap-1 group-active:scale-95 transition-transform shadow-2xs">
+                      <LayoutGrid className="w-5 h-5 text-[#F27A1A]" />
+                      <div className="w-5 h-5 rounded-full bg-[#F27A1A] text-white flex items-center justify-center">
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </div>
+                    </div>
+                    <span className="text-[10px] font-bold text-[#F27A1A] line-clamp-2 mt-1 leading-tight">
+                      Tümünü Gör
+                    </span>
+                  </div>
+                </div>
+              </div>
+
             </div>
 
-            <div className="pt-3 border-t border-gray-100">
-              <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2 px-1">
-                Kullanıcı İşlemleri
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                {currentUser ? (
-                  <>
-                    <button
-                      onClick={() => {
-                        onOpenAccount();
-                        setMobileMenuOpen(false);
-                      }}
-                      className="py-2.5 px-3 border border-gray-300 rounded-lg text-xs font-bold text-gray-800 text-center"
-                    >
-                      Hesabım
-                    </button>
-                    <button
-                      onClick={() => {
-                        onOpenOrders();
-                        setMobileMenuOpen(false);
-                      }}
-                      className="py-2.5 px-3 border border-gray-300 rounded-lg text-xs font-bold text-gray-800 text-center"
-                    >
-                      Siparişlerim
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      onClick={() => {
-                        onOpenAuth('login');
-                        setMobileMenuOpen(false);
-                      }}
-                      className="py-2.5 px-3 bg-[#111827] text-white rounded-lg text-xs font-bold text-center"
-                    >
-                      Giriş Yap
-                    </button>
-                    <button
-                      onClick={() => {
-                        onOpenAuth('register');
-                        setMobileMenuOpen(false);
-                      }}
-                      className="py-2.5 px-3 border border-gray-300 text-gray-800 rounded-lg text-xs font-bold text-center"
-                    >
-                      Kayıt Ol
-                    </button>
-                  </>
-                )}
-              </div>
+            {/* 4. ALT HESAP VE BİLGİLENDİRME MENÜSÜ (TRENDYOL BİREBİR) */}
+            <div className="border-t border-gray-200 bg-white divide-y divide-gray-100 shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  if (currentUser) {
+                    onOpenAccount();
+                  } else {
+                    onOpenAuth('login');
+                  }
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full px-4 py-3 flex items-center justify-between text-xs font-bold text-gray-800 hover:bg-gray-50 active:bg-gray-100 cursor-pointer"
+              >
+                <span className="flex items-center gap-2.5">
+                  <User className="w-4 h-4 text-gray-600" />
+                  <span>Hesabım {currentUser ? `(${currentUser.name || 'Giriş Yapıldı'})` : ''}</span>
+                </span>
+                <ChevronRight className="w-4 h-4 text-gray-400" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  window.open('https://wa.me/905000000000', '_blank');
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full px-4 py-3 flex items-center justify-between text-xs font-bold text-gray-800 hover:bg-gray-50 active:bg-gray-100 cursor-pointer"
+              >
+                <span className="flex items-center gap-2.5">
+                  <MessageCircle className="w-4 h-4 text-gray-600" />
+                  <span>Bizimle İletişime Geç</span>
+                </span>
+                <ChevronRight className="w-4 h-4 text-gray-400" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  onOpenOrders();
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full px-4 py-3 flex items-center justify-between text-xs font-bold text-gray-800 hover:bg-gray-50 active:bg-gray-100 cursor-pointer"
+              >
+                <span className="flex items-center gap-2.5">
+                  <PackageCheck className="w-4 h-4 text-gray-600" />
+                  <span>Siparişlerim & Kargo Takip</span>
+                </span>
+                <ChevronRight className="w-4 h-4 text-gray-400" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  onSelectCategory('all');
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full px-4 py-3 flex items-center justify-between text-xs font-bold text-gray-800 hover:bg-gray-50 active:bg-gray-100 cursor-pointer"
+              >
+                <span className="flex items-center gap-2.5">
+                  <Info className="w-4 h-4 text-gray-600" />
+                  <span>Hakkımızda & Güvenli Alışveriş</span>
+                </span>
+                <ChevronRight className="w-4 h-4 text-gray-400" />
+              </button>
             </div>
+
           </div>
         )}
 
