@@ -146,7 +146,7 @@ export default function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('popular'); // 'popular', 'price-asc', 'price-desc', 'newest', 'rating'
   const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(1500);
+  const [maxPrice, setMaxPrice] = useState(null);
   const [onlyInStock, setOnlyInStock] = useState(false);
   const [onlyDiscounted, setOnlyDiscounted] = useState(false);
   const [minRating, setMinRating] = useState(0);
@@ -157,7 +157,7 @@ export default function App() {
   const activeFilterCount = useMemo(() => {
     let count = 0;
     if (activeCategory !== 'all') count++;
-    if (minPrice > 0 || maxPrice < 1500) count++;
+    if (minPrice > 0 || (maxPrice !== null && maxPrice > 0)) count++;
     if (onlyInStock) count++;
     if (onlyDiscounted) count++;
     if (minRating > 0) count++;
@@ -249,7 +249,9 @@ export default function App() {
 
   // Persist state
   useEffect(() => {
-    localStorage.setItem('neefsane_catalog_v5', JSON.stringify(products));
+    try {
+      localStorage.setItem('neefsane_catalog_v5', JSON.stringify(products));
+    } catch {}
   }, [products]);
 
   useEffect(() => {
@@ -496,7 +498,7 @@ export default function App() {
     setSearchTerm('');
     setSortBy('popular');
     setMinPrice(0);
-    setMaxPrice(1500);
+    setMaxPrice(null);
     setOnlyInStock(false);
     setOnlyDiscounted(false);
     setMinRating(0);
@@ -508,7 +510,7 @@ export default function App() {
                            activeTabSection !== 'all' || 
                            searchTerm || 
                            minPrice > 0 || 
-                           maxPrice < 1500 || 
+                           (maxPrice !== null && maxPrice > 0) || 
                            onlyInStock || 
                            onlyDiscounted || 
                            minRating > 0;
@@ -538,8 +540,11 @@ export default function App() {
       }
 
       // Price range filter
-      const currentPrice = prod.discountPrice || prod.price;
-      if (currentPrice < minPrice || currentPrice > maxPrice) {
+      const currentPrice = Number(prod.discountPrice || prod.price || 0);
+      if (minPrice > 0 && currentPrice < Number(minPrice)) {
+        return false;
+      }
+      if (maxPrice !== null && maxPrice !== undefined && maxPrice > 0 && currentPrice > Number(maxPrice)) {
         return false;
       }
 

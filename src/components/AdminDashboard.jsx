@@ -273,21 +273,53 @@ export default function AdminDashboard({
     setFormError('');
   };
 
-  // File Upload handler (converts to base64 so it works without server)
+  // File Upload handler (compresses to web-friendly jpeg so it never exceeds quota)
   const handleImageFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    if (file.size > 2.5 * 1024 * 1024) {
-      setFormError('Görsel boyutu 2.5MB altında olmalıdır.');
+    if (file.size > 15 * 1024 * 1024) {
+      setFormError('Görsel boyutu 15MB altında olmalıdır.');
       return;
     }
 
     const reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreview(reader.result);
-      setForm(prev => ({ ...prev, image: reader.result }));
-      setFormError('');
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const maxDim = 900;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxDim) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          }
+        } else {
+          if (height > maxDim) {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const compressed = canvas.toDataURL('image/jpeg', 0.82);
+        setImagePreview(compressed);
+        setForm(prev => ({ ...prev, image: compressed }));
+        setFormError('');
+      };
+      img.onerror = () => {
+        setImagePreview(event.target.result);
+        setForm(prev => ({ ...prev, image: event.target.result }));
+        setFormError('');
+      };
+      img.src = event.target.result;
     };
     reader.readAsDataURL(file);
   };

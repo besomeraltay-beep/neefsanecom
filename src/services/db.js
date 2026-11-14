@@ -33,8 +33,35 @@ export async function getProducts() {
         .order('created_at', { ascending: false });
 
       if (!error && Array.isArray(data) && data.length > 0) {
-        localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(data));
-        return data;
+        // Map snake_case DB columns to frontend camelCase
+        const mapped = data.map(p => ({
+          id: p.id,
+          name: p.name,
+          category: p.category,
+          categoryName: p.category_name || p.category,
+          price: Number(p.price) || 0,
+          discountPrice: p.discount_price !== null && p.discount_price !== undefined ? Number(p.discount_price) : null,
+          stockCount: Number(p.stock_count) || 0,
+          rating: Number(p.rating) || 5.0,
+          reviewsCount: Number(p.reviews_count) || 1,
+          tag: p.tag || '',
+          isFeatured: !!p.is_featured,
+          isBestSeller: !!p.is_bestseller,
+          isNew: !!p.is_new,
+          image: p.image || '',
+          images: Array.isArray(p.images) && p.images.length > 0 ? p.images : (p.image ? [p.image] : []),
+          description: p.description || '',
+          models: Array.isArray(p.models) ? p.models : [],
+          colors: Array.isArray(p.colors) ? p.colors : [],
+          features: Array.isArray(p.features) ? p.features : []
+        }));
+
+        try {
+          localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(mapped));
+        } catch {
+          // Safe fallback if localStorage quota exceeded
+        }
+        return mapped;
       }
     } catch (e) {
       console.warn('Supabase products fetch failed, using local fallback:', e);
@@ -50,7 +77,9 @@ export async function getProducts() {
     }
   } catch {}
 
-  localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(INITIAL_PRODUCTS));
+  try {
+    localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(INITIAL_PRODUCTS));
+  } catch {}
   return INITIAL_PRODUCTS;
 }
 

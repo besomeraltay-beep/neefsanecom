@@ -41,12 +41,12 @@ export default function TrendyolSidebarFilter({
     setOpenSections(prev => ({ ...prev, [sec]: !prev[sec] }));
   };
 
-  const [localMin, setLocalMin] = useState(minPrice);
-  const [localMax, setLocalMax] = useState(maxPrice);
+  const [localMin, setLocalMin] = useState(minPrice || '');
+  const [localMax, setLocalMax] = useState(maxPrice || '');
 
   const handleApplyPrice = (e) => {
     e.preventDefault();
-    onPriceChange(Number(localMin), Number(localMax));
+    onPriceChange(localMin ? Number(localMin) : 0, localMax ? Number(localMax) : null);
   };
 
   return (
@@ -122,7 +122,7 @@ export default function TrendyolSidebarFilter({
         </button>
 
         {openSections.price && (
-          <form onSubmit={handleApplyPrice} className="space-y-2.5 pt-1 animate-fadeIn">
+          <form key={`${minPrice}-${maxPrice}`} onSubmit={handleApplyPrice} className="space-y-2.5 pt-1 animate-fadeIn">
             <div className="flex items-center gap-2">
               <input
                 type="number"
