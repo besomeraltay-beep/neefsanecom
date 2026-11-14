@@ -34,7 +34,7 @@ export default function CheckoutModal({
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedCourier, setSelectedCourier] = useState('MNG Kargo');
+  const selectedCourier = 'MNG Kargo';
 
   if (!isOpen) return null;
 
@@ -245,43 +245,11 @@ export default function CheckoutModal({
                 </div>
               </div>
 
-              {/* 3. Kargo Firması Seçimi */}
-              <div className="space-y-3 pt-4 border-t border-gray-200">
-                <h3 className="text-sm font-bold text-gray-900 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Truck className="w-4 h-4 text-[#C2410C]" />
-                    <span>3. Kargo Firması Tercihi</span>
-                  </div>
-                  <span className="text-[11px] text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded">
-                    Ücretsiz Sigortalı Gönderi
-                  </span>
-                </h3>
-
-                <div className="grid grid-cols-3 gap-2">
-                  {['MNG Kargo', 'Yurtiçi Kargo', 'Aras Kargo'].map((kargo) => (
-                    <button
-                      key={kargo}
-                      type="button"
-                      onClick={() => setSelectedCourier(kargo)}
-                      className={`p-3 rounded-xl border text-center transition-all cursor-pointer ${
-                        selectedCourier === kargo
-                          ? 'border-[#111827] bg-gray-50 text-gray-900 ring-1 ring-[#111827]'
-                          : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300'
-                      }`}
-                    >
-                      <Truck className="w-5 h-5 mx-auto mb-1 text-gray-800" />
-                      <span className="text-xs font-bold block">{kargo}</span>
-                      <span className="text-[10px] text-gray-400">Hızlı Teslimat</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* 4. Ödeme Yöntemi */}
+              {/* 3. Ödeme Yöntemi */}
               <div className="space-y-3 pt-4 border-t border-gray-200">
                 <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
                   <CreditCard className="w-4 h-4 text-[#C2410C]" />
-                  <span>4. Ödeme Yöntemi</span>
+                  <span>3. Ödeme Yöntemi</span>
                 </h3>
 
                 <div className="grid grid-cols-3 gap-2">
