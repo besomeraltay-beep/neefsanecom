@@ -150,8 +150,7 @@ export default function App() {
   const [onlyDiscounted, setOnlyDiscounted] = useState(false);
   const [minRating, setMinRating] = useState(0);
 
-  // Mobile Trendyol Filter & Sort state
-  const [isMobileSortOpen, setIsMobileSortOpen] = useState(false);
+  // Mobile Trendyol Filter state
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
   const activeFilterCount = useMemo(() => {
@@ -560,9 +559,16 @@ export default function App() {
 
       return true;
     }).sort((a, b) => {
-      // User requirement: When "Tümü" is selected, the first 2 products must ALWAYS be 3D car figures!
-      // (1. 3D Porsche 911 GT3 RS, 2. 3D Nissan Skyline GT-R R34)
-      if (activeCategory === 'all') {
+      const priceA = Number(a.discountPrice || a.price || 0);
+      const priceB = Number(b.discountPrice || b.price || 0);
+
+      if (sortBy === 'price-asc') return priceA - priceB;
+      if (sortBy === 'price-desc') return priceB - priceA;
+      if (sortBy === 'rating') return (Number(b.rating) || 0) - (Number(a.rating) || 0);
+      if (sortBy === 'newest') return (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0);
+
+      // Sadece 'popular' (Önerilen Sıralama) seçildiğinde 3D vitrin önceliği
+      if (activeCategory === 'all' && sortBy === 'popular') {
         const getPriority = (item) => {
           if (item.id === 'neef-3d-01') return 2000;
           if (item.id === 'neef-3d-02') return 1000;
@@ -573,15 +579,8 @@ export default function App() {
         if (pA !== pB) return pB - pA;
       }
 
-      const priceA = a.discountPrice || a.price;
-      const priceB = b.discountPrice || b.price;
-
-      if (sortBy === 'price-asc') return priceA - priceB;
-      if (sortBy === 'price-desc') return priceB - priceA;
-      if (sortBy === 'rating') return (b.rating || 0) - (a.rating || 0);
-      if (sortBy === 'newest') return (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0);
-      // default: popular (reviews count)
-      return (b.reviewsCount || 0) - (a.reviewsCount || 0);
+      // Default: popülerlik (değerlendirme sayısına göre)
+      return (Number(b.reviewsCount) || 0) - (Number(a.reviewsCount) || 0);
     });
   }, [products, activeCategory, activeTabSection, searchTerm, sortBy, minPrice, maxPrice, onlyInStock, onlyDiscounted, minRating]);
 
@@ -741,14 +740,25 @@ export default function App() {
 
           {/* 3. MOBİL: STICKY SIRALAMA & FİLTRELE BARI (Trendyol Birebir İmzası) */}
           <div className="sticky top-0 sm:top-[68px] z-30 bg-white border-y border-gray-200 grid grid-cols-2 text-center text-xs font-semibold shadow-xs lg:hidden divide-x divide-gray-200">
-            <button 
-              type="button"
-              onClick={() => setIsMobileSortOpen(true)}
-              className="flex items-center justify-center gap-1.5 py-3 text-gray-800 active:bg-orange-50/40 cursor-pointer"
-            >
-              <ArrowUpDown className="w-3.5 h-3.5 text-[#F27A1A]" />
-              <span className="font-bold text-[12px]">{sortLabels[sortBy] || 'Önerilen Sıralama'}</span>
-            </button>
+            {/* Sıralama Butonu (Telefonda tıklandığı an yerel iOS/Android sıralama menüsünü açar ve ürünleri anında dizer) */}
+            <div className="relative flex items-center justify-center gap-1.5 py-3 text-gray-800 active:bg-orange-50/40">
+              <ArrowUpDown className="w-3.5 h-3.5 text-[#F27A1A] pointer-events-none" />
+              <span className="font-bold text-[12px] pointer-events-none truncate max-w-[140px]">
+                {sortLabels[sortBy] || 'Önerilen Sıralama'}
+              </span>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer text-base z-10"
+                aria-label="Sıralama Seçenekleri"
+              >
+                <option value="popular">Önerilen Sıralama</option>
+                <option value="price-asc">Fiyat: En Düşük</option>
+                <option value="price-desc">Fiyat: En Yüksek</option>
+                <option value="rating">En Çok Değerlendirilenler</option>
+                <option value="newest">En Yeni Eklenenler</option>
+              </select>
+            </div>
             
             <button 
               type="button"
@@ -901,58 +911,7 @@ export default function App() {
             <ArrowUp className="w-5 h-5 text-gray-800" />
           </button>
 
-          {/* MOBİL SIRALAMA MODAL BOTTOM SHEET */}
-          {isMobileSortOpen && (
-            <div 
-              className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-xs animate-fadeIn lg:hidden"
-              onClick={() => setIsMobileSortOpen(false)}
-            >
-              <div 
-                className="w-full bg-white rounded-t-2xl p-4 space-y-3 max-h-[80vh] overflow-y-auto animate-slideUp"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-                  <h3 className="font-black text-base text-gray-900">Sıralama</h3>
-                  <button 
-                    onClick={() => setIsMobileSortOpen(false)} 
-                    className="p-1 text-gray-400 hover:text-gray-700 cursor-pointer"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
-                <div className="space-y-1">
-                  {[
-                    { id: 'popular', label: 'Önerilen Sıralama' },
-                    { id: 'price-asc', label: 'En Düşük Fiyat' },
-                    { id: 'price-desc', label: 'En Yüksek Fiyat' },
-                    { id: 'rating', label: 'En Çok Değerlendirilenler' },
-                    { id: 'newest', label: 'En Yeni Eklenenler' }
-                  ].map((opt) => {
-                    const isSelected = sortBy === opt.id;
-                    return (
-                      <button
-                        key={opt.id}
-                        onClick={() => {
-                          setSortBy(opt.id);
-                          setIsMobileSortOpen(false);
-                        }}
-                        className="w-full flex items-center justify-between py-3 px-2 text-sm font-semibold border-b border-gray-50 active:bg-orange-50/50 cursor-pointer"
-                      >
-                        <span className={isSelected ? 'text-[#F27A1A] font-bold' : 'text-gray-800'}>
-                          {opt.label}
-                        </span>
-                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                          isSelected ? 'border-[#F27A1A]' : 'border-gray-300'
-                        }`}>
-                          {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-[#F27A1A]" />}
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          )}
+
 
           {/* MOBİL FİLTRELE DRAWER / BOTTOM SHEET */}
           {isMobileFilterOpen && (
