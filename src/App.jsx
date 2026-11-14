@@ -705,14 +705,16 @@ export default function App() {
         /* Main Store Showcase & Catalog (Trendyol Full Width Layout) */
         <div ref={catalogRef} className="flex-1 w-full flex flex-col">
           
-          {/* 1. ÜST: Yuvarlak Kategori Hikayeleri (Trendyol Story Çemberleri) */}
-          <CategoryCards 
-            activeCategory={activeCategory} 
-            onSelectCategory={(id) => {
-              setActiveCategory(id);
-              setActiveTabSection('all');
-            }} 
-          />
+          {/* 1. ÜST: Yuvarlak Kategori Hikayeleri (Sadece Mobilde Görünür) */}
+          <div className="lg:hidden">
+            <CategoryCards 
+              activeCategory={activeCategory} 
+              onSelectCategory={(id) => {
+                setActiveCategory(id);
+                setActiveTabSection('all');
+              }} 
+            />
+          </div>
 
           {/* 2. MOBİL: Kategori Başlığı ve Ürün Sayısı */}
           <div className="flex items-center justify-between px-3.5 py-2.5 bg-white border-b border-gray-100 lg:hidden">
