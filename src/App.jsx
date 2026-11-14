@@ -33,8 +33,13 @@ import {
 } from './services/db';
 import { 
   Search, 
-  ArrowUpDown
+  ArrowUpDown,
+  SlidersHorizontal,
+  ChevronLeft,
+  X,
+  ArrowUp
 } from 'lucide-react';
+import CategoryCards from './components/CategoryCards';
 
 export default function App() {
   // Products state (centralized)
@@ -144,6 +149,28 @@ export default function App() {
   const [onlyInStock, setOnlyInStock] = useState(false);
   const [onlyDiscounted, setOnlyDiscounted] = useState(false);
   const [minRating, setMinRating] = useState(0);
+
+  // Mobile Trendyol Filter & Sort state
+  const [isMobileSortOpen, setIsMobileSortOpen] = useState(false);
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (activeCategory !== 'all') count++;
+    if (minPrice > 0 || maxPrice < 1500) count++;
+    if (onlyInStock) count++;
+    if (onlyDiscounted) count++;
+    if (minRating > 0) count++;
+    return count;
+  }, [activeCategory, minPrice, maxPrice, onlyInStock, onlyDiscounted, minRating]);
+
+  const sortLabels = {
+    'popular': 'Önerilen Sıralama',
+    'price-asc': 'En Düşük Fiyat',
+    'price-desc': 'En Yüksek Fiyat',
+    'rating': 'En Çok Değerlendirilenler',
+    'newest': 'En Yeni Eklenenler'
+  };
 
   // Modals state
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -676,13 +703,70 @@ export default function App() {
         />
       ) : (
         /* Main Store Showcase & Catalog (Trendyol Full Width Layout) */
-        <main ref={catalogRef} className="flex-1 w-full max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div ref={catalogRef} className="flex-1 w-full flex flex-col">
+          
+          {/* 1. ÜST: Yuvarlak Kategori Hikayeleri (Trendyol Story Çemberleri) */}
+          <CategoryCards 
+            activeCategory={activeCategory} 
+            onSelectCategory={(id) => {
+              setActiveCategory(id);
+              setActiveTabSection('all');
+            }} 
+          />
+
+          {/* 2. MOBİL: Kategori Başlığı ve Ürün Sayısı */}
+          <div className="flex items-center justify-between px-3.5 py-2.5 bg-white border-b border-gray-100 lg:hidden">
+            <div className="flex items-center gap-2">
+              {activeCategory !== 'all' && (
+                <button 
+                  onClick={() => setActiveCategory('all')} 
+                  className="p-1 -ml-1 text-gray-700 hover:text-black cursor-pointer"
+                  title="Tüm Ürünler"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+              )}
+              <div>
+                <h1 className="text-sm font-black text-gray-900 tracking-tight leading-tight">
+                  {CATEGORIES.find(c => c.id === activeCategory)?.name || 'Tüm Ürünler'}
+                </h1>
+                <span className="text-[11px] text-gray-500 font-medium">
+                  {filteredProducts.length} Ürün {searchTerm && `• "${searchTerm}"`}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* 3. MOBİL: STICKY SIRALAMA & FİLTRELE BARI (Trendyol Birebir İmzası) */}
+          <div className="sticky top-0 sm:top-[68px] z-30 bg-white border-y border-gray-200 grid grid-cols-2 text-center text-xs font-semibold shadow-xs lg:hidden divide-x divide-gray-200">
+            <button 
+              type="button"
+              onClick={() => setIsMobileSortOpen(true)}
+              className="flex items-center justify-center gap-1.5 py-3 text-gray-800 active:bg-orange-50/40 cursor-pointer"
+            >
+              <ArrowUpDown className="w-3.5 h-3.5 text-[#F27A1A]" />
+              <span className="font-bold text-[12px]">{sortLabels[sortBy] || 'Önerilen Sıralama'}</span>
+            </button>
             
-            {/* Main 2-Column Trendyol Layout */}
+            <button 
+              type="button"
+              onClick={() => setIsMobileFilterOpen(true)}
+              className="flex items-center justify-center gap-1.5 py-3 text-gray-800 active:bg-orange-50/40 cursor-pointer"
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5 text-[#F27A1A]" />
+              <span className="font-bold text-[12px]">
+                Filtrele {activeFilterCount > 0 && <span className="text-[#F27A1A]">({activeFilterCount})</span>}
+              </span>
+            </button>
+          </div>
+
+          {/* 4. ANA İÇERİK ALANI */}
+          <main className="w-full max-w-[1800px] mx-auto px-2 sm:px-6 lg:px-8 py-3 sm:py-6">
+            
             <div className="flex flex-col lg:flex-row gap-5 items-start">
               
-              {/* Sol Kolon: Profesyonel Filtreleme (Kompakt 230px genişlik) */}
-              <div className="w-full lg:w-56 shrink-0">
+              {/* Sol Kolon: Masaüstü Filtreler (Mobilde gizli) */}
+              <div className="hidden lg:block w-56 shrink-0">
                 <TrendyolSidebarFilter
                   categories={CATEGORIES}
                   activeCategory={activeCategory}
@@ -708,11 +792,11 @@ export default function App() {
                 />
               </div>
 
-              {/* Sağ Kolon: Genişletilmiş Ürün Vitrini, Segmentli Sekmeler ve Sıralama */}
-              <div className="flex-1 min-w-0 space-y-5">
+              {/* Sağ Kolon: Ürün Vitrini */}
+              <div className="flex-1 min-w-0 space-y-3 sm:space-y-5">
                 
-                {/* Üst Bar: Kategori Başlığı, Sonuç Sayısı, Segment Sekmeleri & Sıralama Dropdown */}
-                <div className="p-4 sm:p-5 bg-white rounded-2xl border border-gray-200/90 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+                {/* Masaüstü Üst Bar (Mobilde gizli) */}
+                <div className="hidden lg:flex p-4 sm:p-5 bg-white rounded-2xl border border-gray-200/90 shadow-sm items-center justify-between gap-4">
                   <div>
                     <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">
                       {CATEGORIES.find(c => c.id === activeCategory)?.name || 'Tüm Ürünler'}
@@ -723,9 +807,7 @@ export default function App() {
                     </p>
                   </div>
 
-                  {/* Segmented Filter & Sort Bar */}
-                  <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto justify-end">
-                    {/* Showcase Segment Tabs: Tümü, Öne Çıkanlar, Yeni, Çok Satan */}
+                  <div className="flex flex-wrap items-center gap-2.5 justify-end">
                     <div className="flex items-center p-1 bg-gray-100 rounded-xl">
                       {[
                         { id: 'all', label: 'Tümü' },
@@ -747,7 +829,6 @@ export default function App() {
                       ))}
                     </div>
 
-                    {/* Sıralama Dropdown */}
                     <div className="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-semibold">
                       <ArrowUpDown className="w-3.5 h-3.5 text-gray-500 shrink-0" />
                       <select
@@ -765,7 +846,7 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* Ürün Izgarası: Trendyol ve Hepsiburada gibi 4'lü geniş kolon */}
+                {/* Ürün Izgarası: MOBİLDE 2'Lİ (grid-cols-2 gap-2), MASAÜSTÜNDE 4'LÜ */}
                 {filteredProducts.length === 0 ? (
                   <div className="py-20 text-center bg-white rounded-2xl border border-gray-200 p-8 space-y-4 shadow-sm">
                     <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto text-gray-400">
@@ -785,7 +866,7 @@ export default function App() {
                     </button>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-3 xl:grid-cols-4">
                     {filteredProducts.map((product) => (
                       <ProductCard
                         key={product.id}
@@ -807,6 +888,146 @@ export default function App() {
             </div>
 
           </main>
+
+          {/* Mobil Yukarı Çık Butonu (Trendyol tarzı) */}
+          <button 
+            type="button"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
+            className="fixed bottom-6 right-4 z-40 w-10 h-10 rounded-full bg-white/95 backdrop-blur-md shadow-lg border border-gray-200 flex items-center justify-center text-gray-700 active:scale-95 transition-all lg:hidden cursor-pointer"
+            title="Yukarı Çık"
+          >
+            <ArrowUp className="w-5 h-5 text-gray-800" />
+          </button>
+
+          {/* MOBİL SIRALAMA MODAL BOTTOM SHEET */}
+          {isMobileSortOpen && (
+            <div 
+              className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-xs animate-fadeIn lg:hidden"
+              onClick={() => setIsMobileSortOpen(false)}
+            >
+              <div 
+                className="w-full bg-white rounded-t-2xl p-4 space-y-3 max-h-[80vh] overflow-y-auto animate-slideUp"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+                  <h3 className="font-black text-base text-gray-900">Sıralama</h3>
+                  <button 
+                    onClick={() => setIsMobileSortOpen(false)} 
+                    className="p-1 text-gray-400 hover:text-gray-700 cursor-pointer"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+                <div className="space-y-1">
+                  {[
+                    { id: 'popular', label: 'Önerilen Sıralama' },
+                    { id: 'price-asc', label: 'En Düşük Fiyat' },
+                    { id: 'price-desc', label: 'En Yüksek Fiyat' },
+                    { id: 'rating', label: 'En Çok Değerlendirilenler' },
+                    { id: 'newest', label: 'En Yeni Eklenenler' }
+                  ].map((opt) => {
+                    const isSelected = sortBy === opt.id;
+                    return (
+                      <button
+                        key={opt.id}
+                        onClick={() => {
+                          setSortBy(opt.id);
+                          setIsMobileSortOpen(false);
+                        }}
+                        className="w-full flex items-center justify-between py-3 px-2 text-sm font-semibold border-b border-gray-50 active:bg-orange-50/50 cursor-pointer"
+                      >
+                        <span className={isSelected ? 'text-[#F27A1A] font-bold' : 'text-gray-800'}>
+                          {opt.label}
+                        </span>
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                          isSelected ? 'border-[#F27A1A]' : 'border-gray-300'
+                        }`}>
+                          {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-[#F27A1A]" />}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* MOBİL FİLTRELE DRAWER / BOTTOM SHEET */}
+          {isMobileFilterOpen && (
+            <div 
+              className="fixed inset-0 z-50 flex flex-col justify-end bg-black/60 backdrop-blur-xs animate-fadeIn lg:hidden"
+              onClick={() => setIsMobileFilterOpen(false)}
+            >
+              <div 
+                className="w-full bg-white rounded-t-2xl max-h-[85vh] flex flex-col overflow-hidden animate-slideUp"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2">
+                    <SlidersHorizontal className="w-4 h-4 text-[#F27A1A]" />
+                    <h3 className="font-black text-base text-gray-900">Filtreler</h3>
+                    {activeFilterCount > 0 && (
+                      <span className="text-xs bg-orange-100 text-[#F27A1A] font-bold px-2 py-0.5 rounded-full">
+                        ({activeFilterCount})
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {hasActiveFilters && (
+                      <button 
+                        onClick={handleResetFilters} 
+                        className="text-xs font-bold text-[#F27A1A] underline cursor-pointer"
+                      >
+                        Temizle
+                      </button>
+                    )}
+                    <button 
+                      onClick={() => setIsMobileFilterOpen(false)} 
+                      className="p-1 text-gray-400 hover:text-gray-700 cursor-pointer"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex-1 overflow-y-auto p-4">
+                  <TrendyolSidebarFilter
+                    categories={CATEGORIES}
+                    activeCategory={activeCategory}
+                    onSelectCategory={(id) => {
+                      setActiveCategory(id);
+                    }}
+                    minPrice={minPrice}
+                    maxPrice={maxPrice}
+                    onPriceChange={(min, max) => {
+                      setMinPrice(min);
+                      setMaxPrice(max);
+                    }}
+                    onlyInStock={onlyInStock}
+                    onStockToggle={(val) => setOnlyInStock(val)}
+                    onlyDiscounted={onlyDiscounted}
+                    onDiscountToggle={(val) => setOnlyDiscounted(val)}
+                    minRating={minRating}
+                    onRatingChange={(val) => setMinRating(val)}
+                    onResetFilters={handleResetFilters}
+                    hasActiveFilters={hasActiveFilters}
+                    totalProductCount={filteredProducts.length}
+                  />
+                </div>
+
+                <div className="p-4 border-t border-gray-100 bg-white">
+                  <button
+                    onClick={() => setIsMobileFilterOpen(false)}
+                    className="w-full py-3 bg-[#F27A1A] hover:bg-[#d9670d] text-white rounded-xl text-sm font-black shadow-md active:scale-98 transition-all cursor-pointer"
+                  >
+                    Ürünleri Gör ({filteredProducts.length} Ürün)
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+        </div>
       )}
 
       {/* Cart Drawer */}
