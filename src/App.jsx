@@ -29,7 +29,8 @@ import {
   saveCoupon, 
   deleteCoupon, 
   getStoreSettings, 
-  saveStoreSettings 
+  saveStoreSettings,
+  updateCustomerProfile
 } from './services/db';
 import { 
   Search, 
@@ -1065,8 +1066,11 @@ export default function App() {
         isOpen={isAccountOpen}
         onClose={() => setIsAccountOpen(false)}
         currentUser={currentUser}
-        onUpdateUser={(updated) => {
+        onUpdateUser={async (updated) => {
           setCurrentUser(updated);
+          try {
+            await updateCustomerProfile(updated.email, updated);
+          } catch {}
           showToast('Hesap bilgileriniz güncellendi.');
         }}
         onLogout={() => {

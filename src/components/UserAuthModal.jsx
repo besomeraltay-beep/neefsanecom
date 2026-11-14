@@ -12,9 +12,12 @@ import {
   ShieldCheck, 
   PackageCheck, 
   ArrowRight,
-  Gift
+  Gift,
+  AlertCircle,
+  Loader2
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { loginCustomer, registerCustomer } from '../services/db';
 
 export default function UserAuthModal({
   isOpen,
@@ -32,6 +35,10 @@ export default function UserAuthModal({
   const [registerPhone, setRegisterPhone] = useState('');
   const [registerPassword, setRegisterPassword] = useState('');
 
+  // Loading & error state
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
   // Welcome screen state for new member
   const [newRegisteredUser, setNewRegisteredUser] = useState(null);
   const [couponCopied, setCouponCopied] = useState(false);
@@ -40,47 +47,55 @@ export default function UserAuthModal({
 
   const handleModalClose = () => {
     setNewRegisteredUser(null);
+    setErrorMessage('');
     onClose();
   };
 
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    const user = {
-      name: loginEmail.split('@')[0] || 'Değerli Müşterimiz',
-      email: loginEmail,
-      phone: '',
-      address: '',
-      joinedAt: new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })
-    };
-    onLoginSuccess(user, false);
-    handleModalClose();
+    setErrorMessage('');
+    setIsLoading(true);
+    try {
+      const user = await loginCustomer({ email: loginEmail, password: loginPassword });
+      onLoginSuccess(user, false);
+      handleModalClose();
+    } catch (err) {
+      setErrorMessage(err.message || 'Giriş yapılamadı. Lütfen bilgilerinizi kontrol edin.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleRegisterSubmit = (e) => {
+  const handleRegisterSubmit = async (e) => {
     e.preventDefault();
-    if (!registerName.trim() || !registerEmail.trim()) return;
-
-    const newUser = {
-      name: registerName.trim(),
-      email: registerEmail.trim(),
-      phone: registerPhone.trim(),
-      address: '',
-      joinedAt: new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })
-    };
-
-    // Save and notify parent without closing immediately
-    onLoginSuccess(newUser, true);
-    setNewRegisteredUser(newUser);
-
-    // Trigger celebratory confetti burst
+    setErrorMessage('');
+    setIsLoading(true);
     try {
-      confetti({
-        particleCount: 85,
-        spread: 75,
-        origin: { y: 0.55 }
+      const newUser = await registerCustomer({
+        name: registerName,
+        email: registerEmail,
+        phone: registerPhone,
+        password: registerPassword
       });
-    } catch {
-      // safe fallback
+
+      // Save and notify parent without closing immediately
+      onLoginSuccess(newUser, true);
+      setNewRegisteredUser(newUser);
+
+      // Trigger celebratory confetti burst
+      try {
+        confetti({
+          particleCount: 85,
+          spread: 75,
+          origin: { y: 0.55 }
+        });
+      } catch {
+        // safe fallback
+      }
+    } catch (err) {
+      setErrorMessage(err.message || 'Kayıt işlemi başarısız oldu. Lütfen tekrar deneyin.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -241,7 +256,10 @@ export default function UserAuthModal({
             {/* Tab switch */}
             <div className="flex border-b border-gray-200 mb-6">
               <button
-                onClick={() => setActiveTab('login')}
+                onClick={() => {
+                  setActiveTab('login');
+                  setErrorMessage('');
+                }}
                 className={`flex-1 py-2.5 text-xs sm:text-sm font-bold border-b-2 transition-all cursor-pointer ${
                   activeTab === 'login' 
                     ? 'border-[#111827] text-gray-900' 
@@ -251,7 +269,10 @@ export default function UserAuthModal({
                 Giriş Yap
               </button>
               <button
-                onClick={() => setActiveTab('register')}
+                onClick={() => {
+                  setActiveTab('register');
+                  setErrorMessage('');
+                }}
                 className={`flex-1 py-2.5 text-xs sm:text-sm font-bold border-b-2 transition-all cursor-pointer ${
                   activeTab === 'register' 
                     ? 'border-[#111827] text-gray-900' 
@@ -261,6 +282,14 @@ export default function UserAuthModal({
                 Kayıt Ol
               </button>
             </div>
+
+            {/* Error Message Alert */}
+            {errorMessage && (
+              <div className="p-3 mb-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center gap-2 animate-fadeIn">
+                <AlertCircle className="w-4 h-4 text-rose-500 shrink-0" />
+                <span>{errorMessage}</span>
+              </div>
+            )}
 
             {/* Login Form */}
             {activeTab === 'login' ? (
@@ -273,7 +302,10 @@ export default function UserAuthModal({
                       type="email"
                       required
                       value={loginEmail}
-                      onChange={(e) => setLoginEmail(e.target.value)}
+                      onChange={(e) => {
+                        setLoginEmail(e.target.value);
+                        if (errorMessage) setErrorMessage('');
+                      }}
                       placeholder="ornek@mail.com"
                       className="w-full bg-white text-gray-900 text-xs rounded-xl pl-9 pr-3 py-2.5 border border-gray-300 focus:border-black focus:outline-none"
                     />
@@ -288,7 +320,10 @@ export default function UserAuthModal({
                       type="password"
                       required
                       value={loginPassword}
-                      onChange={(e) => setLoginPassword(e.target.value)}
+                      onChange={(e) => {
+                        setLoginPassword(e.target.value);
+                        if (errorMessage) setErrorMessage('');
+                      }}
                       placeholder="••••••••"
                       className="w-full bg-white text-gray-900 text-xs rounded-xl pl-9 pr-3 py-2.5 border border-gray-300 focus:border-black focus:outline-none"
                     />
@@ -307,9 +342,17 @@ export default function UserAuthModal({
 
                 <button
                   type="submit"
-                  className="w-full py-3 bg-[#111827] hover:bg-black text-white text-xs font-bold rounded-xl transition-colors cursor-pointer shadow-sm"
+                  disabled={isLoading}
+                  className="w-full py-3 bg-[#111827] hover:bg-black disabled:bg-gray-400 text-white text-xs font-bold rounded-xl transition-colors cursor-pointer shadow-sm flex items-center justify-center gap-2"
                 >
-                  Giriş Yap
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin text-white" />
+                      <span>Giriş Yapılıyor...</span>
+                    </>
+                  ) : (
+                    <span>Giriş Yap</span>
+                  )}
                 </button>
               </form>
             ) : (
@@ -323,7 +366,10 @@ export default function UserAuthModal({
                       type="text"
                       required
                       value={registerName}
-                      onChange={(e) => setRegisterName(e.target.value)}
+                      onChange={(e) => {
+                        setRegisterName(e.target.value);
+                        if (errorMessage) setErrorMessage('');
+                      }}
                       placeholder="Örn: Burak Özdemir"
                       className="w-full bg-white text-gray-900 text-xs rounded-xl pl-9 pr-3 py-2.5 border border-gray-300 focus:border-black focus:outline-none"
                     />
@@ -338,7 +384,10 @@ export default function UserAuthModal({
                       type="email"
                       required
                       value={registerEmail}
-                      onChange={(e) => setRegisterEmail(e.target.value)}
+                      onChange={(e) => {
+                        setRegisterEmail(e.target.value);
+                        if (errorMessage) setErrorMessage('');
+                      }}
                       placeholder="ornek@mail.com"
                       className="w-full bg-white text-gray-900 text-xs rounded-xl pl-9 pr-3 py-2.5 border border-gray-300 focus:border-black focus:outline-none"
                     />
@@ -352,7 +401,10 @@ export default function UserAuthModal({
                     <input
                       type="tel"
                       value={registerPhone}
-                      onChange={(e) => setRegisterPhone(e.target.value)}
+                      onChange={(e) => {
+                        setRegisterPhone(e.target.value);
+                        if (errorMessage) setErrorMessage('');
+                      }}
                       placeholder="05XX XXX XX XX"
                       className="w-full bg-white text-gray-900 text-xs rounded-xl pl-9 pr-3 py-2.5 border border-gray-300 focus:border-black focus:outline-none"
                     />
@@ -367,7 +419,10 @@ export default function UserAuthModal({
                       type="password"
                       required
                       value={registerPassword}
-                      onChange={(e) => setRegisterPassword(e.target.value)}
+                      onChange={(e) => {
+                        setRegisterPassword(e.target.value);
+                        if (errorMessage) setErrorMessage('');
+                      }}
                       placeholder="En az 6 karakter"
                       className="w-full bg-white text-gray-900 text-xs rounded-xl pl-9 pr-3 py-2.5 border border-gray-300 focus:border-black focus:outline-none"
                     />
@@ -376,10 +431,20 @@ export default function UserAuthModal({
 
                 <button
                   type="submit"
-                  className="w-full py-3.5 bg-[#111827] hover:bg-black text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-sm mt-2 flex items-center justify-center gap-1.5"
+                  disabled={isLoading}
+                  className="w-full py-3.5 bg-[#111827] hover:bg-black disabled:bg-gray-400 text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-sm mt-2 flex items-center justify-center gap-1.5"
                 >
-                  <Sparkles className="w-4 h-4 text-amber-400" />
-                  <span>Üyeliğimi Başlat & Hediyemi Al</span>
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin text-white" />
+                      <span>Kaydediliyor...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 text-amber-400" />
+                      <span>Üyeliğimi Başlat & Hediyemi Al</span>
+                    </>
+                  )}
                 </button>
               </form>
             )}

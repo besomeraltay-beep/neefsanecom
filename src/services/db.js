@@ -392,3 +392,166 @@ export async function saveStoreSettings(settings) {
 
   return settings;
 }
+
+// ==========================================
+// 5. CUSTOMERS AUTH & DATABASE API
+// ==========================================
+const CUSTOMERS_KEY = 'neefsane_customers_v1';
+
+async function hashPassword(password) {
+  if (typeof crypto !== 'undefined' && crypto.subtle) {
+    try {
+      const msgUint8 = new TextEncoder().encode(password);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    } catch {}
+  }
+  let hash = 0;
+  for (let i = 0; i < password.length; i++) {
+    const char = password.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash |= 0;
+  }
+  return 'h_' + Math.abs(hash).toString(16);
+}
+
+export async function getCustomers() {
+  if (isSupabaseConfigured && supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('settings')
+        .select('value')
+        .eq('key', 'customers_registry')
+        .maybeSingle();
+
+      if (!error && data && Array.isArray(data.value)) {
+        localStorage.setItem(CUSTOMERS_KEY, JSON.stringify(data.value));
+        return data.value;
+      }
+    } catch (e) {
+      console.warn('Supabase customers fetch error:', e);
+    }
+  }
+
+  try {
+    const local = localStorage.getItem(CUSTOMERS_KEY);
+    return local ? JSON.parse(local) : [];
+  } catch {
+    return [];
+  }
+}
+
+export async function saveCustomers(customersList) {
+  try {
+    localStorage.setItem(CUSTOMERS_KEY, JSON.stringify(customersList));
+  } catch {}
+
+  if (isSupabaseConfigured && supabase) {
+    try {
+      await supabase
+        .from('settings')
+        .upsert({
+          key: 'customers_registry',
+          value: customersList
+        }, { onConflict: 'key' });
+    } catch (e) {
+      console.warn('Supabase customers save error:', e);
+    }
+  }
+}
+
+export async function registerCustomer({ name, email, phone = '', password }) {
+  const cleanName = (name || '').trim();
+  const cleanEmail = (email || '').trim().toLowerCase();
+  const cleanPhone = (phone || '').trim();
+  const cleanPassword = (password || '').trim();
+
+  if (!cleanName) throw new Error('Lütfen ad ve soyadınızı girin.');
+  if (!cleanEmail || !cleanEmail.includes('@') || !cleanEmail.includes('.')) {
+    throw new Error('Lütfen geçerli bir e-posta adresi girin.');
+  }
+  if (!cleanPassword || cleanPassword.length < 6) {
+    throw new Error('Şifreniz en az 6 karakter olmalıdır.');
+  }
+
+  const customers = await getCustomers();
+  const exists = customers.find(c => c.email && c.email.toLowerCase() === cleanEmail);
+  if (exists) {
+    throw new Error('Bu e-posta adresiyle kayıtlı bir hesap zaten var. Lütfen giriş yapın.');
+  }
+
+  const passwordHash = await hashPassword(cleanPassword);
+  const now = new Date();
+  const dateFormatted = now.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  const newCustomer = {
+    id: 'cust_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6),
+    name: cleanName,
+    email: cleanEmail,
+    phone: cleanPhone,
+    passwordHash: passwordHash,
+    address: '',
+    city: '',
+    district: '',
+    joinedAt: dateFormatted,
+    createdAt: now.toISOString(),
+    ordersCount: 0
+  };
+
+  const updatedList = [newCustomer, ...customers];
+  await saveCustomers(updatedList);
+
+  const { passwordHash: _, ...safeUser } = newCustomer;
+  return safeUser;
+}
+
+export async function loginCustomer({ email, password }) {
+  const cleanEmail = (email || '').trim().toLowerCase();
+  const cleanPassword = (password || '').trim();
+
+  if (!cleanEmail) throw new Error('Lütfen e-posta adresinizi girin.');
+  if (!cleanPassword) throw new Error('Lütfen şifrenizi girin.');
+
+  const customers = await getCustomers();
+  const customer = customers.find(c => c.email && c.email.toLowerCase() === cleanEmail);
+
+  if (!customer) {
+    throw new Error('Bu e-posta adresine kayıtlı bir hesap bulunamadı. Lütfen önce kayıt olun.');
+  }
+
+  const inputHash = await hashPassword(cleanPassword);
+  if (customer.passwordHash && customer.passwordHash !== inputHash) {
+    throw new Error('Girdiğiniz şifre hatalı. Lütfen kontrol edip tekrar deneyin.');
+  }
+
+  const { passwordHash: _, ...safeUser } = customer;
+  return safeUser;
+}
+
+export async function updateCustomerProfile(email, updatedData) {
+  if (!email) return null;
+  const cleanEmail = email.trim().toLowerCase();
+  const customers = await getCustomers();
+  const next = customers.map(c => {
+    if (c.email && c.email.toLowerCase() === cleanEmail) {
+      return {
+        ...c,
+        name: updatedData.name !== undefined ? updatedData.name : c.name,
+        phone: updatedData.phone !== undefined ? updatedData.phone : c.phone,
+        address: updatedData.address !== undefined ? updatedData.address : c.address,
+        city: updatedData.city !== undefined ? updatedData.city : c.city,
+        district: updatedData.district !== undefined ? updatedData.district : c.district
+      };
+    }
+    return c;
+  });
+
+  await saveCustomers(next);
+  const found = next.find(c => c.email && c.email.toLowerCase() === cleanEmail);
+  if (found) {
+    const { passwordHash: _, ...safeUser } = found;
+    return safeUser;
+  }
+  return updatedData;
+}
