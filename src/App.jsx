@@ -1102,7 +1102,6 @@ export default function App() {
         }}
         onOpenCorporate={(type) => setCorporateModal({ isOpen: true, type })}
         onOpenOrders={() => navigateTo('/siparislerim')}
-        onOpenAdmin={() => navigateTo('/admin')}
         onShowToast={showToast}
       />
 

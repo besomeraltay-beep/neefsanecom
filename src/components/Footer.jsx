@@ -11,7 +11,6 @@ export default function Footer({
   onSelectCategory,
   onOpenCorporate,
   onOpenOrders,
-  onOpenAdmin,
   onShowToast
 }) {
   const [newsletterEmail, setNewsletterEmail] = useState('');
@@ -249,17 +248,6 @@ export default function Footer({
                   Bize Ulaşın
                 </button>
               </li>
-              {onOpenAdmin && (
-                <li className="pt-1 border-t border-gray-200">
-                  <button 
-                    onClick={onOpenAdmin} 
-                    className="hover:text-[#C2410C] transition-colors cursor-pointer flex items-center gap-1.5 text-gray-400 font-semibold text-[11px]"
-                  >
-                    <Lock className="w-3 h-3 text-[#C2410C]" />
-                    <span>Yönetici Portalı</span>
-                  </button>
-                </li>
-              )}
             </ul>
           </div>
 
