@@ -30,100 +30,215 @@ const DRAWER_DEPARTMENTS = [
 const DRAWER_MENU_DATA = {
   'tum': {
     sidebar: [
-      { id: 'populer', name: 'Popüler Ürünler' },
-      { id: '3d', name: '3D Modeller' },
-      { id: 'kilif', name: 'Telefon Kılıfı' },
-      { id: 'taki', name: 'Kolye & Bileklik' },
-      { id: 'aksesuar', name: 'Aksesuarlar' },
-      { id: 'firsat', name: 'Fırsat Ürünleri' },
-      { id: 'luks', name: 'Lüks & Özel Seri' }
-    ],
-    items: [
-      { name: 'Porsche 911 GT3', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=240&auto=format&fit=crop&q=80' },
-      { name: 'Nissan GT-R R34', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=240&auto=format&fit=crop&q=80' },
-      { name: 'MagSafe Kılıf', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1601593346740-925612772716?w=240&auto=format&fit=crop&q=80' },
-      { name: 'Kristal Şeffaf', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=240&auto=format&fit=crop&q=80' },
-      { name: 'Kuzey Yıldızı', categoryId: 'kolye', image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=240&auto=format&fit=crop&q=80' },
-      { name: 'Mat Oniks Lav', categoryId: 'bileklik', image: 'https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=240&auto=format&fit=crop&q=80' },
-      { name: 'AirPods Zırh', categoryId: 'diger-aksesuarlar', image: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=240&auto=format&fit=crop&q=80' },
-      { name: 'Gotik Hançer', categoryId: 'kolye', image: 'https://images.unsplash.com/photo-1506630448388-4e683c67ddb0?w=240&auto=format&fit=crop&q=80' }
+      {
+        id: 'populer',
+        name: 'Popüler Ürünler',
+        categoryId: 'all',
+        items: [
+          { name: 'Porsche 911 GT3', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Nissan GT-R R34', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=240&auto=format&fit=crop&q=80' },
+          { name: 'MagSafe Kılıf', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1601593346740-925612772716?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Kuzey Yıldızı', categoryId: 'kolye', image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Mat Oniks Lav', categoryId: 'bileklik', image: 'https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=240&auto=format&fit=crop&q=80' },
+          { name: 'AirPods Zırh', categoryId: 'diger-aksesuarlar', image: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=240&auto=format&fit=crop&q=80' }
+        ]
+      },
+      {
+        id: '3d',
+        name: '3D Modeller',
+        categoryId: '3d-araba-figuru',
+        items: [
+          { name: 'Porsche 911 GT3 RS', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Nissan Skyline GT-R', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=240&auto=format&fit=crop&q=80' },
+          { name: 'İtalyan Rosso Corsa', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Cyberpunk Supercar', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Bavarian M Power', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Midnight Purple R34', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=240&auto=format&fit=crop&q=80' }
+        ]
+      },
+      {
+        id: 'kilif',
+        name: 'Telefon Kılıfı',
+        categoryId: 'telefon-kilifi',
+        items: [
+          { name: 'MagSafe Mat Siyah', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1601593346740-925612772716?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Kristal Şeffaf Airbag', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Karbon Fiber Zırh', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1580910051074-3eb694886505?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Lüks Alcantara Deri', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1586105251261-72a756497a11?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Hava Kanallı Soğutma', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1585060544812-6b45742d762f?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Buzlu Yarı Saydam', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1601593346740-925612772716?w=240&auto=format&fit=crop&q=80' }
+        ]
+      },
+      {
+        id: 'taki',
+        name: 'Kolye & Bileklik',
+        categoryId: 'kolye',
+        items: [
+          { name: 'Kuzey Yıldızı Madalyon', categoryId: 'kolye', image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Geometrik Prizma Çelik', categoryId: 'kolye', image: 'https://images.unsplash.com/photo-1611591475870-7ec8293998b3?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Mat Oniks Lav Taşı', categoryId: 'bileklik', image: 'https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Örgü Deri Kelepçe', categoryId: 'bileklik', image: 'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Gotik Hançer Çelik', categoryId: 'kolye', image: 'https://images.unsplash.com/photo-1506630448388-4e683c67ddb0?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Manyetik Titanyum', categoryId: 'bileklik', image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=240&auto=format&fit=crop&q=80' }
+        ]
+      },
+      {
+        id: 'aksesuar',
+        name: 'Aksesuarlar',
+        categoryId: 'diger-aksesuarlar',
+        items: [
+          { name: 'AirPods Zırh Kılıf', categoryId: 'diger-aksesuarlar', image: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Masaüstü Stand', categoryId: 'diger-aksesuarlar', image: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Lüks Hediye Kutusu', categoryId: 'diger-aksesuarlar', image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=240&auto=format&fit=crop&q=80' }
+        ]
+      },
+      {
+        id: 'firsat',
+        name: 'Fırsat Ürünleri',
+        categoryId: 'all',
+        items: [
+          { name: 'Porsche 911 GT3 (%24)', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=240&auto=format&fit=crop&q=80' },
+          { name: 'MagSafe Kılıf (%15)', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1601593346740-925612772716?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Kuzey Yıldızı (%20)', categoryId: 'kolye', image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Lav Taşı Bileklik (%18)', categoryId: 'bileklik', image: 'https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=240&auto=format&fit=crop&q=80' }
+        ]
+      },
+      {
+        id: 'luks',
+        name: 'Lüks & Özel Seri',
+        categoryId: 'all',
+        items: [
+          { name: 'Cyberpunk Supercar Limited', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Alcantara Hakiki Deri', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1586105251261-72a756497a11?w=240&auto=format&fit=crop&q=80' },
+          { name: '316L Titanyum Manyetik', categoryId: 'bileklik', image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=240&auto=format&fit=crop&q=80' }
+        ]
+      }
     ]
   },
   '3d-araba-figuru': {
     sidebar: [
-      { id: 'supercar', name: 'Supercar Serisi' },
-      { id: 'jdm', name: 'JDM Efsaneleri' },
-      { id: 'classic', name: 'Klasik Spor' },
-      { id: 'cyber', name: 'Cyberpunk' },
-      { id: 'stand', name: 'Masaüstü Stand' }
-    ],
-    items: [
-      { name: 'Porsche 911 GT3', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=240&auto=format&fit=crop&q=80' },
-      { name: 'Nissan Skyline', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=240&auto=format&fit=crop&q=80' },
-      { name: 'İtalyan Rosso', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=240&auto=format&fit=crop&q=80' },
-      { name: 'Cyberpunk Konsept', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=240&auto=format&fit=crop&q=80' },
-      { name: 'Bavarian M Power', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=240&auto=format&fit=crop&q=80' }
+      {
+        id: 'supercar',
+        name: 'Supercar Serisi',
+        categoryId: '3d-araba-figuru',
+        items: [
+          { name: 'Porsche 911 GT3 RS', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=240&auto=format&fit=crop&q=80' },
+          { name: 'İtalyan Rosso Corsa', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Bavarian M Power', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=240&auto=format&fit=crop&q=80' }
+        ]
+      },
+      {
+        id: 'jdm',
+        name: 'JDM Efsaneleri',
+        categoryId: '3d-araba-figuru',
+        items: [
+          { name: 'Nissan Skyline GT-R R34', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Midnight Purple R34', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=240&auto=format&fit=crop&q=80' }
+        ]
+      },
+      {
+        id: 'cyber',
+        name: 'Cyberpunk & Fütüristik',
+        categoryId: '3d-araba-figuru',
+        items: [
+          { name: 'Cyberpunk Supercar', categoryId: '3d-araba-figuru', image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=240&auto=format&fit=crop&q=80' }
+        ]
+      }
     ]
   },
   'telefon-kilifi': {
     sidebar: [
-      { id: 'magsafe', name: 'MagSafe Serisi' },
-      { id: 'seffaf', name: 'Kristal Şeffaf' },
-      { id: 'karbon', name: 'Karbon Fiber' },
-      { id: 'alcantara', name: 'Alcantara Lüks' },
-      { id: 'koruma', name: 'Darbe Emici Airbag' }
-    ],
-    items: [
-      { name: 'MagSafe Mat', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1601593346740-925612772716?w=240&auto=format&fit=crop&q=80' },
-      { name: 'Kristal Şeffaf', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=240&auto=format&fit=crop&q=80' },
-      { name: 'Karbon Zırh', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1580910051074-3eb694886505?w=240&auto=format&fit=crop&q=80' },
-      { name: 'Lüks Alcantara', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1586105251261-72a756497a11?w=240&auto=format&fit=crop&q=80' },
-      { name: 'Hava Kanallı', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1585060544812-6b45742d762f?w=240&auto=format&fit=crop&q=80' }
+      {
+        id: 'magsafe',
+        name: 'MagSafe Kılıflar',
+        categoryId: 'telefon-kilifi',
+        items: [
+          { name: 'MagSafe Mat Siyah', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1601593346740-925612772716?w=240&auto=format&fit=crop&q=80' }
+        ]
+      },
+      {
+        id: 'seffaf',
+        name: 'Kristal Şeffaf',
+        categoryId: 'telefon-kilifi',
+        items: [
+          { name: 'Kristal Şeffaf Airbag', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=240&auto=format&fit=crop&q=80' }
+        ]
+      },
+      {
+        id: 'karbon',
+        name: 'Karbon & Alcantara',
+        categoryId: 'telefon-kilifi',
+        items: [
+          { name: 'Karbon Fiber Zırh', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1580910051074-3eb694886505?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Lüks Alcantara', categoryId: 'telefon-kilifi', image: 'https://images.unsplash.com/photo-1586105251261-72a756497a11?w=240&auto=format&fit=crop&q=80' }
+        ]
+      }
     ]
   },
   'kolye': {
     sidebar: [
-      { id: 'madalyon', name: 'Madalyon Kolye' },
-      { id: 'zincir', name: 'Çelik Zincirler' },
-      { id: 'prizma', name: 'Geometrik Seri' },
-      { id: 'gotik', name: 'Gotik & Sembol' },
-      { id: 'minimal', name: 'Minimalist' }
-    ],
-    items: [
-      { name: 'Kuzey Yıldızı', categoryId: 'kolye', image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=240&auto=format&fit=crop&q=80' },
-      { name: 'Geometrik Prizma', categoryId: 'kolye', image: 'https://images.unsplash.com/photo-1611591475870-7ec8293998b3?w=240&auto=format&fit=crop&q=80' },
-      { name: 'Gümüş Figaro', categoryId: 'kolye', image: 'https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?w=240&auto=format&fit=crop&q=80' },
-      { name: 'Gotik Hançer', categoryId: 'kolye', image: 'https://images.unsplash.com/photo-1506630448388-4e683c67ddb0?w=240&auto=format&fit=crop&q=80' },
-      { name: 'Minimalist Çubuk', categoryId: 'kolye', image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=240&auto=format&fit=crop&q=80' }
+      {
+        id: 'madalyon',
+        name: 'Madalyon Kolye',
+        categoryId: 'kolye',
+        items: [
+          { name: 'Kuzey Yıldızı Madalyon', categoryId: 'kolye', image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=240&auto=format&fit=crop&q=80' }
+        ]
+      },
+      {
+        id: 'zincir',
+        name: 'Çelik Zincir & Prizma',
+        categoryId: 'kolye',
+        items: [
+          { name: 'Geometrik Prizma', categoryId: 'kolye', image: 'https://images.unsplash.com/photo-1611591475870-7ec8293998b3?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Gümüş Figaro Zincir', categoryId: 'kolye', image: 'https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Gotik Hançer', categoryId: 'kolye', image: 'https://images.unsplash.com/photo-1506630448388-4e683c67ddb0?w=240&auto=format&fit=crop&q=80' }
+        ]
+      }
     ]
   },
   'bileklik': {
     sidebar: [
-      { id: 'dogaltas', name: 'Doğal Taş' },
-      { id: 'deri', name: 'Hakiki Deri' },
-      { id: 'celik', name: 'Çelik Kelepçe' },
-      { id: 'denge', name: 'Lav & Oniks' },
-      { id: 'titanyum', name: 'Titanyum Manyetik' }
-    ],
-    items: [
-      { name: 'Mat Oniks Enerji', categoryId: 'bileklik', image: 'https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=240&auto=format&fit=crop&q=80' },
-      { name: 'Örgü Deri Kelepçe', categoryId: 'bileklik', image: 'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=240&auto=format&fit=crop&q=80' },
-      { name: 'Kaplan Gözü Lav', categoryId: 'bileklik', image: 'https://images.unsplash.com/photo-1600003014755-ba31aa59c4b6?w=240&auto=format&fit=crop&q=80' },
-      { name: 'Çift Sıra Çelik', categoryId: 'bileklik', image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=240&auto=format&fit=crop&q=80' },
-      { name: 'Manyetik Titanyum', categoryId: 'bileklik', image: 'https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=240&auto=format&fit=crop&q=80' }
+      {
+        id: 'dogaltas',
+        name: 'Doğal Taş & Lav',
+        categoryId: 'bileklik',
+        items: [
+          { name: 'Mat Oniks Enerji', categoryId: 'bileklik', image: 'https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Kaplan Gözü Lav', categoryId: 'bileklik', image: 'https://images.unsplash.com/photo-1600003014755-ba31aa59c4b6?w=240&auto=format&fit=crop&q=80' }
+        ]
+      },
+      {
+        id: 'deri',
+        name: 'Deri & Çelik Kelepçe',
+        categoryId: 'bileklik',
+        items: [
+          { name: 'Örgü Deri Kelepçe', categoryId: 'bileklik', image: 'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Çift Sıra Çelik', categoryId: 'bileklik', image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Manyetik Titanyum', categoryId: 'bileklik', image: 'https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=240&auto=format&fit=crop&q=80' }
+        ]
+      }
     ]
   },
   'diger-aksesuarlar': {
     sidebar: [
-      { id: 'airpods', name: 'AirPods Kılıfı' },
-      { id: 'arac', name: 'Araç İçi Tutucu' },
-      { id: 'kutu', name: 'Özel Hediye Kutusu' },
-      { id: 'set', name: 'Kombin Setler' }
-    ],
-    items: [
-      { name: 'AirPods Zırh', categoryId: 'diger-aksesuarlar', image: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=240&auto=format&fit=crop&q=80' },
-      { name: 'Masaüstü Stand', categoryId: 'diger-aksesuarlar', image: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=240&auto=format&fit=crop&q=80' },
-      { name: 'Lüks Hediye Kutusu', categoryId: 'diger-aksesuarlar', image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=240&auto=format&fit=crop&q=80' }
+      {
+        id: 'airpods',
+        name: 'AirPods & Kılıf',
+        categoryId: 'diger-aksesuarlar',
+        items: [
+          { name: 'AirPods Zırh Kılıf', categoryId: 'diger-aksesuarlar', image: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=240&auto=format&fit=crop&q=80' }
+        ]
+      },
+      {
+        id: 'hediye',
+        name: 'Stand & Hediye Kutusu',
+        categoryId: 'diger-aksesuarlar',
+        items: [
+          { name: 'Masaüstü Stand', categoryId: 'diger-aksesuarlar', image: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=240&auto=format&fit=crop&q=80' },
+          { name: 'Lüks Hediye Kutusu', categoryId: 'diger-aksesuarlar', image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=240&auto=format&fit=crop&q=80' }
+        ]
+      }
     ]
   }
 };
@@ -150,6 +265,7 @@ export default function Navbar({
   const [activeSidebarIdx, setActiveSidebarIdx] = useState(0);
 
   const currentDeptData = DRAWER_MENU_DATA[activeDrawerDept] || DRAWER_MENU_DATA['tum'];
+  const currentSidebarItem = currentDeptData.sidebar[activeSidebarIdx] || currentDeptData.sidebar[0] || { name: 'Kategori', items: [] };
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
   const [couponCopied, setCouponCopied] = useState(false);
@@ -628,14 +744,17 @@ export default function Navbar({
                     <button
                       key={side.id}
                       type="button"
-                      onClick={() => setActiveSidebarIdx(idx)}
-                      className={`w-full text-left px-3 py-3 text-[12px] leading-snug transition-colors cursor-pointer ${
+                      onClick={() => {
+                        setActiveSidebarIdx(idx);
+                      }}
+                      className={`w-full text-left px-3 py-3 text-[12px] leading-snug transition-colors cursor-pointer flex items-center justify-between ${
                         isActive
-                          ? 'bg-white text-[#F27A1A] font-extrabold border-l-2 border-[#F27A1A]'
+                          ? 'bg-white text-[#F27A1A] font-extrabold border-l-2 border-[#F27A1A] shadow-xs'
                           : 'text-gray-700 font-medium hover:bg-gray-100'
                       }`}
                     >
-                      {side.name}
+                      <span>{side.name}</span>
+                      {isActive && <ChevronRight className="w-3.5 h-3.5 text-[#F27A1A] shrink-0" />}
                     </button>
                   );
                 })}
@@ -643,8 +762,26 @@ export default function Navbar({
 
               {/* Sağ Kolon: 3'lü Görsel İkon Kartları Izgarası (Beyaz Arka Plan) */}
               <div className="flex-1 bg-white p-3 overflow-y-auto">
+                {/* Üst Kategori Başlığı ve Doğrudan Mağazaya Gitme Linki */}
+                <div className="flex items-center justify-between pb-2 mb-2.5 border-b border-gray-100">
+                  <span className="font-extrabold text-[12px] text-gray-900 truncate">
+                    {currentSidebarItem.name}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onSelectCategory(currentSidebarItem.categoryId || 'all');
+                      setMobileMenuOpen(false);
+                    }}
+                    className="text-[11px] font-bold text-[#F27A1A] flex items-center gap-0.5 hover:underline shrink-0 cursor-pointer"
+                  >
+                    <span>Tümünü Gör</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
                 <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
-                  {currentDeptData.items.map((item, idx) => (
+                  {currentSidebarItem.items?.map((item, idx) => (
                     <div
                       key={idx}
                       onClick={() => {
@@ -670,7 +807,7 @@ export default function Navbar({
                   {/* Son Kart: Tümünü Gör (Trendyol İmzası) */}
                   <div
                     onClick={() => {
-                      onSelectCategory(activeDrawerDept === 'tum' ? 'all' : activeDrawerDept);
+                      onSelectCategory(currentSidebarItem.categoryId || 'all');
                       setMobileMenuOpen(false);
                     }}
                     className="group flex flex-col items-center text-center cursor-pointer"
