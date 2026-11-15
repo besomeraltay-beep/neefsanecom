@@ -13,8 +13,8 @@ export default function AdminLoginModal({
 
   const handleLogin = (e) => {
     e.preventDefault();
-    // Default admin passcode: admin123 (or neefsane)
-    if (password === 'admin123' || password === 'neefsane' || password === '123456') {
+    const expectedPass = import.meta.env.VITE_ADMIN_PASS || '11432445352.Aa';
+    if (password === expectedPass) {
       setError('');
       setPassword('');
       onSuccess();
@@ -71,9 +71,6 @@ export default function AdminLoginModal({
               onChange={(e) => setPassword(e.target.value)}
               className="w-full bg-white px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs focus:outline-none focus:border-[#111827]"
             />
-            <div className="text-[11px] text-gray-400 pt-1">
-              (Varsayılan şifre: <code className="font-mono text-gray-700 font-bold">admin123</code>)
-            </div>
           </div>
 
           <button

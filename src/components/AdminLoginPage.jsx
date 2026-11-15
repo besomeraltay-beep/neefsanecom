@@ -16,9 +16,14 @@ export default function AdminLoginPage({
     setError('');
 
     setTimeout(() => {
-      // Default credentials: admin / admin123 (or neefsane)
-      const validPass = password === 'admin123' || password === 'neefsane' || password === '123456';
-      if (validPass) {
+      const cleanUser = username.trim().toLowerCase();
+      const expectedUser = (import.meta.env.VITE_ADMIN_USER || 'altay').trim().toLowerCase();
+      const expectedPass = import.meta.env.VITE_ADMIN_PASS || '11432445352.Aa';
+
+      const isUserValid = cleanUser === expectedUser;
+      const isPassValid = password === expectedPass;
+
+      if (isUserValid && isPassValid) {
         setIsLoading(false);
         onSuccess();
       } else {
@@ -86,7 +91,7 @@ export default function AdminLoginPage({
             <input
               type="text"
               required
-              placeholder="admin"
+              placeholder="Kullanıcı adınızı girin"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="w-full bg-slate-800/80 border border-slate-700 text-white placeholder-slate-500 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C2410C] transition-colors"
@@ -98,7 +103,6 @@ export default function AdminLoginPage({
               <label className="text-xs font-bold text-slate-300">
                 Yönetici Şifresi
               </label>
-              <span className="text-[11px] text-slate-500 font-mono">admin123</span>
             </div>
             <input
               type="password"
