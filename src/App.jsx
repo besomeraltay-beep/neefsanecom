@@ -42,6 +42,9 @@ import {
 } from 'lucide-react';
 import CategoryCards from './components/CategoryCards';
 
+// Admin cryptographic session token
+const ADMIN_SECURE_TOKEN = '5c10a2af96cf45ee5e994a408c48a744a73d3290f4b4258adb4386849cee52df';
+
 export default function App() {
   // Products state (centralized)
   const [products, setProducts] = useState(() => {
@@ -203,9 +206,9 @@ export default function App() {
   // Standalone Routing state (Separate /admin, /siparislerim, /urun/:id)
   const [routeState, setRouteState] = useState(() => parseRoute(window.location.pathname));
 
-  // Admin authentication state
+  // Admin authentication state (strictly validated against cryptographic session token)
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(() => {
-    return sessionStorage.getItem('neefsane_admin_auth') === 'true';
+    return sessionStorage.getItem('neefsane_admin_session_token') === ADMIN_SECURE_TOKEN;
   });
 
   // Listen to browser forward/back buttons
@@ -598,6 +601,7 @@ export default function App() {
       return (
         <AdminLoginPage
           onSuccess={() => {
+            sessionStorage.setItem('neefsane_admin_session_token', ADMIN_SECURE_TOKEN);
             sessionStorage.setItem('neefsane_admin_auth', 'true');
             setIsAdminAuthenticated(true);
             showToast('Yönetici paneline giriş yapıldı.');

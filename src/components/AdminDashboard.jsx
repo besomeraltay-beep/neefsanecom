@@ -525,6 +525,7 @@ export default function AdminDashboard({
 
             <button
               onClick={() => {
+                sessionStorage.removeItem('neefsane_admin_session_token');
                 sessionStorage.removeItem('neefsane_admin_auth');
                 onCloseAdmin();
               }}

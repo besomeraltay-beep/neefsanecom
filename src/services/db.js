@@ -550,7 +550,7 @@ export async function loginCustomer({ email, password }) {
   }
 
   const inputHash = await hashPassword(cleanPassword);
-  if (customer.passwordHash && customer.passwordHash !== inputHash) {
+  if (!customer.passwordHash || customer.passwordHash !== inputHash) {
     throw new Error('Girdiğiniz şifre hatalı. Lütfen kontrol edip tekrar deneyin.');
   }
 
